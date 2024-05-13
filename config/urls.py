@@ -38,5 +38,6 @@ urlpatterns = [
     re_path(r'^cookscorner/swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('cookscorner/users/', include('authentication.urls')),
+    path('cookscorner/', include('cooks_corner.urls')),
     path('cookscorner/admin/', admin.site.urls),
 ]

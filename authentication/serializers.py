@@ -49,6 +49,9 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'photo',
             'user_bio',
+            'count_followers',
+            'count_following',
+            'count_recipes',
         ]
 
 

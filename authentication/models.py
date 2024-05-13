@@ -36,5 +36,26 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = SuperUser()
 
+    def count_followers(self):
+        return self.followers.count()
+
+    def count_following(self):
+        return self.following.count()
+
+    def count_recipes(self):
+        return self.recipes.count()
+    
     def __str__(self):
         return f"{self.email}"
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+    followed = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+    followed_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('follower', 'followed')
+
+    def __str__(self):
+        return f"{self.follower.username} follows {self.followed.username}"
