@@ -12,8 +12,6 @@ from authentication.serializers import UserRegisterSerializer, LoginSerializer, 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
     permission_classes = (permissions.AllowAny,)
-    parser_classes = (MultiPartParser, FormParser)
-
 
     def post(self, request, *args, **kwargs):
         """
@@ -32,7 +30,6 @@ class RegisterView(generics.CreateAPIView):
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     permission_classes = (permissions.AllowAny,)
-    parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
         """
@@ -65,7 +62,6 @@ class LoginView(generics.GenericAPIView):
 class LogoutView(generics.GenericAPIView):
     serializer_class = LogoutSerializer
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request):
         """
@@ -105,7 +101,6 @@ class ProfileView(generics.RetrieveAPIView):
 class ProfileUpdateView(generics.GenericAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-    parser_classes = (MultiPartParser, FormParser)
 
     def put(self, request):
         """
