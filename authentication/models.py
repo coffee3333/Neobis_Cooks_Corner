@@ -31,7 +31,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length=255)
     user_bio = models.CharField(max_length=255, blank=True, null=True)
     photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
-
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    
     USERNAME_FIELD = "email"
 
     objects = SuperUser()
