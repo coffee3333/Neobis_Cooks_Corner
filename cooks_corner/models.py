@@ -27,11 +27,12 @@ class Recipe(models.Model):
     difficulty = models.CharField(max_length=20, choices=[('Easy', 'Easy'), ('Medium', 'Medium'), ('Hard', 'Hard')])
     ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
     image = models.ImageField(upload_to='recipe_images/', null=True, blank=True)
-    likes = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ['id'] 
 
 class SavedRecipe(models.Model):
     user = models.ForeignKey(User, related_name='saved_recipes', on_delete=models.CASCADE)
@@ -43,3 +44,15 @@ class SavedRecipe(models.Model):
 
     def __str__(self):
         return f"{self.user.username} saved {self.recipe.title}"
+
+
+class LikedRecipe(models.Model):
+    user = models.ForeignKey(User, related_name='liked_recipes', on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, related_name='liked_by', on_delete=models.CASCADE)
+    liked_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'recipe')
+
+    def __str__(self):
+        return f"{self.user.username} liked {self.recipe.title}"
