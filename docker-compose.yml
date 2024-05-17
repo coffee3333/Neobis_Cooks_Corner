@@ -1,27 +1,25 @@
 version: '3.10'
 
 services:
-  db20:
+  db-cooks:
     image: postgres:latest
     restart: always
     env_file:
       - .env
     volumes:
       - ./postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
-  web20:
+  web-cooks:
     build: .
-    command: >
-      bash -c "python manage.py collectstatic --no-input &&
-               python manage.py migrate &&
-               python manage.py createsuperuser --no-input --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL || true &&
-               gunicorn config.wsgi:application -w 4 -b 0.0.0.0:8020"
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py makemigrations && python manage.py migrate && gunicorn config.wsgi:application -w 4 -b 0.0.0.0:8020"
     volumes:
       - .:/config
       - ./static:/app/static
     ports:
       - "8020:8020"
     depends_on:
-      - db20
+      - db-cooks
     env_file:
       - .env
