@@ -1,10 +1,15 @@
 from authentication.models import User
 from authentication.permissions import IsOwnerOrReadOnly
+from cooks_corner.pagination import CustomPagination
+from cooks_corner.filters import UserFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 from authentication.serializers import (
     UserRegisterSerializer, 
     LoginSerializer, 
@@ -104,6 +109,32 @@ class ProfileView(generics.RetrieveAPIView):
         return super().get(request, *args, **kwargs)
 
 
+class ProfilesList(generics.ListAPIView):
+    queryset = User.objects.all().order_by('id') 
+    pagination_class = CustomPagination
+    parser_classes = (MultiPartParser, FormParser)
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserFilter
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+    def get(self, request, *args, **kwargs):
+        """
+        List of the Profiles of users.
+
+        List of the Profiles of users with the provided information. This endpoint expects a payload containing username details.
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class ProfileUpdateView(generics.GenericAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
@@ -123,3 +154,14 @@ class ProfileUpdateView(generics.GenericAPIView):
             return Response({'message': 'User updated successfully!'}, status.HTTP_200_OK)
         else:
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TokenRefreshView(TokenRefreshView):
+
+    def post(self, *args, **kwargs):
+        """
+        Users token refresh.
+
+        Users token refresh with the refresh token information. This endpoint expects a payload containing user token details.
+        """
+        return super().post(*args, **kwargs)

@@ -36,12 +36,22 @@ class RecipeListView(generics.ListAPIView):
     """
     queryset = Recipe.objects.all().order_by('id') 
     serializer_class = RecipeListSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     pagination_class = CustomPagination
     parser_classes = (MultiPartParser, FormParser)
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
 
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('title', openapi.IN_QUERY, description="Title", type=openapi.TYPE_STRING),
+        openapi.Parameter('author_username', openapi.IN_QUERY, description="Author Username", type=openapi.TYPE_STRING),
+        openapi.Parameter('author_id', openapi.IN_QUERY, description="Author ID", type=openapi.TYPE_INTEGER),
+        openapi.Parameter('category_id', openapi.IN_QUERY, description="Category ID", type=openapi.TYPE_INTEGER),
+        openapi.Parameter('category_name', openapi.IN_QUERY, description="Category Name", type=openapi.TYPE_STRING),
+        openapi.Parameter('saved_by_user', openapi.IN_QUERY, description="Saved by User", type=openapi.TYPE_BOOLEAN),
+        openapi.Parameter('page', openapi.IN_QUERY, description="Page number", type=openapi.TYPE_INTEGER),
+        openapi.Parameter('limit', openapi.IN_QUERY, description="Number of results to return per page", type=openapi.TYPE_INTEGER),
+    ])
     def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
@@ -52,7 +62,10 @@ class RecipeListView(generics.ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
+    def get_filterset(self, *args, **kwargs):
+        kwargs['request'] = self.request
+        return super().get_filterset(*args, **kwargs)
 
 class RecipeCreateView(generics.CreateAPIView):
     """
