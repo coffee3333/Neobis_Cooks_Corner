@@ -9,12 +9,22 @@ from authentication.permissions import IsOwnerOrReadOnly
 
 
 class FollowListView(generics.ListAPIView):
+    """
+    Following profiles list.
+
+    Following profiles list. This endpoint send list of the following paars.
+    """
     queryset = Follow.objects.all()
     serializer_class = FollowListSerializer
     permission_classes = [IsAuthenticated]
 
 
 class FollowCreateView(generics.CreateAPIView):
+    """
+    Follow the user.
+
+    Follow the user. This endpoint provides follow to the user.
+    """
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
@@ -27,6 +37,11 @@ class FollowCreateView(generics.CreateAPIView):
 
 
 class FollowDestroyView(generics.DestroyAPIView):
+    """
+    Unfollow the user.
+
+    Unfollow the user. This endpoint provides Unfollow the user.
+    """
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]

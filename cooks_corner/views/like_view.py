@@ -9,12 +9,22 @@ from authentication.permissions import IsOwnerOrReadOnly
 
 
 class LikedRecipeListView(generics.ListAPIView):
+    """
+    Liked profiles list.
+
+    Liked profiles list. This endpoint send list of the liking paars.
+    """
     queryset = LikedRecipe.objects.all()
     serializer_class = LikedRecipeListSerializer
     permission_classes = [IsAuthenticated]
 
 
 class LikedRecipeCreateView(generics.CreateAPIView):
+    """
+    Like the recipe.
+
+    Like the recipe. This endpoint provides Like the recipe.
+    """
     queryset = LikedRecipe.objects.all()
     serializer_class = LikedRecipeSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
@@ -27,6 +37,11 @@ class LikedRecipeCreateView(generics.CreateAPIView):
 
 
 class LikedRecipeDestroyView(generics.DestroyAPIView):
+    """
+    Unlike the recipe.
+
+    Unlike the recipe. This endpoint provides Unlike the recipe.
+    """
     queryset = LikedRecipe.objects.all()
     serializer_class = LikedRecipeSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]

@@ -1,9 +1,6 @@
 from rest_framework import permissions
 
 class ReadOnlyOrCreateOnlyAuthenticated(permissions.BasePermission):
-    """
-    Разрешение на чтение для всех пользователей и создание только для аутентифицированных пользователей.
-    """
 
     def has_permission(self, request, view):
         # Разрешить GET, HEAD, OPTIONS для всех

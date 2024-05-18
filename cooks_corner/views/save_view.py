@@ -9,12 +9,22 @@ from authentication.permissions import IsOwnerOrReadOnly
 
 
 class SavedRecipeListView(generics.ListAPIView):
+    """
+    Saved recipe list.
+
+    Saved recipe list. This endpoint send list of the saved paars.
+    """
     queryset = SavedRecipe.objects.all()
     serializer_class = SavedRecipeListSerializer
     permission_classes = [IsAuthenticated]
 
 
 class SavedRecipeCreateView(generics.CreateAPIView):
+    """
+    Saved the recipe.
+
+    Saved the recipe. This endpoint provides Save the recipe.
+    """
     queryset = SavedRecipe.objects.all()
     serializer_class = SavedRecipeSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
@@ -27,6 +37,11 @@ class SavedRecipeCreateView(generics.CreateAPIView):
 
 
 class SavedRecipeDestroyView(generics.DestroyAPIView):
+    """
+    Unsaved the recipe.
+
+    Unsaved the recipe. This endpoint provides Unsave the recipe.
+    """
     queryset = SavedRecipe.objects.all()
     serializer_class = SavedRecipeSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]

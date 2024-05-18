@@ -14,10 +14,14 @@ from cooks_corner.serializers import (
     CategorySerializer, 
     RecipeListSerializer, 
 )
-import logging
-logger = logging.getLogger(__name__)
+
 
 class CategoryList(generics.ListCreateAPIView):
+    """
+    Category of the recipes.
+
+    Category of the recipes. This endpoint provides creating Category and list of Categories.
+    """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     parser_classes = (MultiPartParser, FormParser)
@@ -25,6 +29,11 @@ class CategoryList(generics.ListCreateAPIView):
 
 
 class RecipeListView(generics.ListAPIView):
+    """
+    List of the recipes.
+
+    List of the recipes. This endpoint provides to get list of recipes with following fillters.
+    """
     queryset = Recipe.objects.all().order_by('id') 
     serializer_class = RecipeListSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -46,6 +55,11 @@ class RecipeListView(generics.ListAPIView):
 
 
 class RecipeCreateView(generics.CreateAPIView):
+    """
+    Create of the recipe.
+
+    Create of the recipe. This endpoint provides to create recipe with ingredients.
+    """
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -58,6 +72,11 @@ class RecipeCreateView(generics.CreateAPIView):
 
 
 class RecipeDetailView(generics.RetrieveAPIView):
+    """
+    Detail of the recipe.
+
+    Detail of the recipe. This endpoint provides to Detail of the recipe.
+    """
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # Разрешение на чтение для всех, редактирование и удаление для аутентифицированных пользователей
