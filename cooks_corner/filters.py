@@ -2,6 +2,7 @@ import django_filters
 from .models import Recipe
 
 class RecipeFilter(django_filters.FilterSet):
+    title = django_filters.CharFilter(field_name='title', lookup_expr='icontains')
     author_username = django_filters.CharFilter(field_name='author__username', lookup_expr='icontains')
     author_id = django_filters.NumberFilter(field_name='author__id')
     category_id = django_filters.NumberFilter(field_name='category__id')

@@ -2,11 +2,16 @@ from authentication.models import User
 from authentication.permissions import IsOwnerOrReadOnly
 from rest_framework import generics, permissions, status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
-from authentication.serializers import UserRegisterSerializer, LoginSerializer, UserSerializer, UserProfileSerializer, LogoutSerializer
+from authentication.serializers import (
+    UserRegisterSerializer, 
+    LoginSerializer, 
+    UserSerializer, 
+    UserProfileSerializer, 
+    LogoutSerializer, 
+)
 
 
 class RegisterView(generics.CreateAPIView):
@@ -84,11 +89,12 @@ class LogoutView(generics.GenericAPIView):
 
 class ProfileView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_object(self):
-        return self.request.user
-
+        user_id = self.kwargs.get('user_id')
+        return User.objects.get(id=user_id)
+    
     def get(self, request, *args, **kwargs):
         """
         Profile of user.

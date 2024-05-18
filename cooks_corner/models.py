@@ -12,7 +12,7 @@ class Category(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
     quantity = models.IntegerField(default=0)
-    quantity_name = models.CharField(max_length=10)
+    unit_name = models.CharField(max_length=10)
 
     def __str__(self):
         return f"{self.name} ({self.quantity})"
@@ -33,6 +33,7 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ['id'] 
+
 
 class SavedRecipe(models.Model):
     user = models.ForeignKey(User, related_name='saved_recipes', on_delete=models.CASCADE)
@@ -56,3 +57,15 @@ class LikedRecipe(models.Model):
 
     def __str__(self):
         return f"{self.user.username} liked {self.recipe.title}"
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+    followed = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+    followed_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('follower', 'followed')
+
+    def __str__(self):
+        return f"{self.follower.username} follows {self.followed.username}"

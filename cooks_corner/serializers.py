@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from cooks_corner.models import Recipe, Ingredient, Category, LikedRecipe, SavedRecipe
-from rest_framework.exceptions import ValidationError
+from cooks_corner.models import Recipe, Ingredient, Category, LikedRecipe, SavedRecipe, Follow
 from django.db import transaction
 
 
@@ -40,19 +39,34 @@ class SavedRecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ['saved_on']
 
 
+class FollowListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['id', 'follower', 'followed', 'followed_on']
+        read_only_fields = ['saved_on']
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['id', 'followed', 'followed_on']
+        read_only_fields = ['followed_on']
+
+
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id', 'name', 'quantity', 'quantity_name']
+        fields = ['id', 'name', 'quantity', 'unit_name']
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     saves_count = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
-        fields = ['id', 'title', 'author', 'category', 'image', 'likes_count', 'saves_count']
+        fields = ['id', 'title', 'author', 'author_name', 'category', 'image', 'likes_count', 'saves_count']
 
     def get_likes_count(self, obj):
         return LikedRecipe.objects.filter(recipe=obj).count()
@@ -60,15 +74,19 @@ class RecipeListSerializer(serializers.ModelSerializer):
     def get_saves_count(self, obj):
         return SavedRecipe.objects.filter(recipe=obj).count()
 
+    def get_author_name(self, obj):
+        return obj.author.username 
+
 
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(many=True)
     likes_count = serializers.SerializerMethodField()
     saves_count = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
-        fields = ['id', 'title', 'author', 'description', 'category', 'cook_time', 'difficulty', 'ingredients', 'image', 'likes_count', 'saves_count']
+        fields = ['id', 'title', 'author', 'author_name', 'description', 'category', 'cook_time', 'difficulty', 'ingredients', 'image', 'likes_count', 'saves_count']
 
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
@@ -105,3 +123,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_saves_count(self, obj):
         return SavedRecipe.objects.filter(recipe=obj).count()
+
+    def get_author_name(self, obj):
+        return obj.author.username 
