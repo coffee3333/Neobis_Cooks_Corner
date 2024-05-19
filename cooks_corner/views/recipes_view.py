@@ -76,6 +76,7 @@ class RecipeCreateView(generics.CreateAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = (MultiPartParser, FormParser)
 
     def perform_create(self, serializer):
         try:

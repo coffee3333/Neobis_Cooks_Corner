@@ -22,6 +22,7 @@ from authentication.serializers import (
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
     permission_classes = (permissions.AllowAny,)
+    parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
         """
@@ -138,6 +139,7 @@ class ProfilesList(generics.ListAPIView):
 class ProfileUpdateView(generics.GenericAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    parser_classes = (MultiPartParser, FormParser)
 
     def put(self, request):
         """
