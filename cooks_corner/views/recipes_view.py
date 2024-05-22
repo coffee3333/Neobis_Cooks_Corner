@@ -1,3 +1,5 @@
+import json
+from django.http import QueryDict
 from drf_yasg import openapi
 from rest_framework import  generics, status, permissions
 from drf_yasg.utils import swagger_auto_schema
@@ -67,6 +69,7 @@ class RecipeListView(generics.ListAPIView):
         kwargs['request'] = self.request
         return super().get_filterset(*args, **kwargs)
 
+
 class RecipeCreateView(generics.CreateAPIView):
     """
     Create of the recipe.
@@ -76,7 +79,7 @@ class RecipeCreateView(generics.CreateAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    parser_classes = (MultiPartParser, FormParser)
+    # parser_classes = (MultiPartParser, FormParser)
 
     def perform_create(self, serializer):
         try:
