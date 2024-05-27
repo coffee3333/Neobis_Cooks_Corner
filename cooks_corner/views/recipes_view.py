@@ -104,7 +104,7 @@ class RecipeDetailView(generics.RetrieveAPIView):
         instance.delete()
 
 
-class RecipeImageCreateUpdateDestroyView(generics.CreateAPIView, generics.DestroyAPIView):
+class RecipeImageCreateView(generics.CreateAPIView):
     """
     Create and delete the recipes images.
 
