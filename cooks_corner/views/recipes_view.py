@@ -1,5 +1,3 @@
-import json
-from django.http import QueryDict
 from drf_yasg import openapi
 from rest_framework import  generics, status, permissions
 from drf_yasg.utils import swagger_auto_schema
@@ -8,13 +6,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from authentication.permissions import IsOwnerOrReadOnly
-from cooks_corner.models import Recipe, Category
+from cooks_corner.models import Recipe, Category, RecipeImage
 from cooks_corner.pagination import CustomPagination
 from cooks_corner.filters import RecipeFilter
 from cooks_corner.serializers import (
     RecipeSerializer, 
     CategorySerializer, 
     RecipeListSerializer, 
+    RecipeImageSerializer,
 )
 
 
@@ -103,3 +102,15 @@ class RecipeDetailView(generics.RetrieveAPIView):
 
     def perform_destroy(self, instance):
         instance.delete()
+
+
+class RecipeImageCreateUpdateDestroyView(generics.CreateAPIView, generics.DestroyAPIView):
+    """
+    Create and delete the recipes images.
+
+    Create and delete the recipes images. This endpoint provides to create and delete the images of the recipes.
+    """
+    queryset = RecipeImage.objects.all()
+    serializer_class = RecipeImageSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

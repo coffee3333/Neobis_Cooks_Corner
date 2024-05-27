@@ -98,16 +98,23 @@ class ProfileView(generics.RetrieveAPIView):
 
     def get_object(self):
         user_id = self.kwargs.get('user_id')
-        return User.objects.get(id=user_id)
-    
+        try:
+            return User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+
     def get(self, request, *args, **kwargs):
         """
         Profile of user.
 
         Profile of user with the provided information. This endpoint expects a payload containing user details.
         """
-        return super().get(request, *args, **kwargs)
+        user = self.get_object()
+        if isinstance(user, Response):  # Check if get_object returned an error response
+            return user
 
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ProfilesList(generics.ListAPIView):
     queryset = User.objects.all().order_by('id') 

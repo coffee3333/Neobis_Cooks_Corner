@@ -26,13 +26,20 @@ class Recipe(models.Model):
     cook_time = models.CharField(max_length=20)
     difficulty = models.CharField(max_length=20, choices=[('Easy', 'Easy'), ('Medium', 'Medium'), ('Hard', 'Hard')])
     ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
-    image = models.ImageField(upload_to='recipe_images/', null=True, blank=True)
 
     def __str__(self):
         return self.title
 
     class Meta:
         ordering = ['id'] 
+
+
+class RecipeImage(models.Model):
+    recipe = models.ForeignKey(Recipe, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='recipe_images/')
+
+    def __str__(self):
+        return f"Image for {self.recipe.title}"
 
 
 class SavedRecipe(models.Model):
